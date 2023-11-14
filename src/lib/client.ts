@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { getSystemPrompt, getUserPrompt } from '../helpers/promptHelpers';
+import { assertNLxQueryResponse } from '../helpers/responseHelpers';
 import { NLxConfig, NLxContext, NLxQueryReturnType } from '../types';
 
 export class NLxClient {
@@ -14,39 +15,64 @@ export class NLxClient {
     this.context.set(key, value);
   }
 
-  private chatQuery(
+  private async newQuery(
     query: string,
-    predicate: string,
     returnType: NLxQueryReturnType,
+    predicate?: string,
   ) {
+    const systemPrompt = getSystemPrompt();
+    const userPrompt = getUserPrompt(
+      this.context,
+      query,
+      returnType,
+      predicate,
+    );
     const messages: OpenAI.ChatCompletionMessageParam[] = [
       {
         role: 'system',
-        content: getSystemPrompt(),
+        content: systemPrompt,
       },
       {
         role: 'user',
-        content: getUserPrompt(this.context, query, returnType, predicate),
+        content: userPrompt,
       },
     ];
 
-    this.client.chat.completions.create({
-      model: 'gpt-4-1106-preview',
-      messages,
-    });
+    try {
+      const response = await this.client.chat.completions.create({
+        model: 'gpt-4-1106-preview',
+        messages,
+      });
+      const answer = response.choices[0].message.content ?? '{}';
+      const answerObj = JSON.parse(answer);
+      assertNLxQueryResponse(answerObj);
+
+      return answerObj;
+    } catch (error) {
+      console.log('user prompt', userPrompt);
+      console.error(error);
+      return undefined;
+    }
   }
 
   public use(key: string, value: string) {
     this.upsertContext(key, value);
   }
 
-  public does(input: string) {
-    if (!input) {
+  public query(returnType: NLxQueryReturnType = 'string') {
+    return async (s: TemplateStringsArray) => {
+      const query = s.join(' ');
+      return await this.newQuery(query, returnType);
+    };
+  }
+
+  public does(predicate: string) {
+    if (!predicate) {
       throw new Error('Input must be a non-empty string');
     }
-    return (s: TemplateStringsArray) => {
-      const query = ['does', ...s].join(' ');
-      return this.chatQuery(query, input, 'boolean');
+    return async (s: TemplateStringsArray) => {
+      const query = ['does', `"${predicate}"`, ...s].join(' ');
+      return this.newQuery(query, 'boolean', predicate);
     };
   }
 

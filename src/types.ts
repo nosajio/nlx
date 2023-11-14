@@ -21,7 +21,7 @@ export type NLxQuery = {
 };
 
 export type NLxQueryResponse = {
-  answer: string;
+  answer: boolean | string | number;
   format: NLxQueryReturnType;
   confidence: number;
 };
