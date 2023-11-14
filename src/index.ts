@@ -1,2 +1,2 @@
-import Nlx from './lib/nlx';
-export default Nlx;
+import NLx from './lib/client';
+export default NLx;

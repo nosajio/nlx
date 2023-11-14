@@ -1,4 +1,4 @@
-import Nlx from '../src';
+import NLx from '../src';
 import { guidelines } from './context';
 
 const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -10,7 +10,7 @@ if (!openaiApiKey) {
 /**
  * Configure the client with an OpenAI API key
  */
-const client = new Nlx({
+const client = new NLx({
   openaiConfig: { apiKey: openaiApiKey },
 });
 

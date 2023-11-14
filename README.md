@@ -1,10 +1,26 @@
-# **Na**tural **L**anguage in **Co**de
+# Natural Language in Code
 
-Tools for leveraging LLMs as first class citizens in your code. Created by [@nosajio](https://twitter.com/nosajio).
+Make your code more powerful with LLMs.
 
-## Getting Started with Nlx
+## 🌟 Quick demo
 
-You can use the library by importing the package and creating a new client. 
+```ts
+import {does} from './client';
+
+/**
+ * Add a new comment if it meets the community guidelines
+ */
+const addComment = async (comment: string) => {
+  if (await does(comment)`meet the community guidelines?`) {
+    await saveComment(comment);
+  } else {
+    await returnError('COMMENT_NOT_ALLOWED');
+  }
+}
+```
+
+## ☑️ Getting Started with nlx
+
 
 ## Install 
 
@@ -12,9 +28,22 @@ You can use the library by importing the package and creating a new client.
 npm install nlx
 ```
 
-### Setup and configuration 
+```
+pnpm add nlx
+```
 
+```
+yarn add nlx
+```
+
+### Configuration 
 
 ```ts
 
 ```
+
+## Functions
+
+### `use`
+
+### `does`

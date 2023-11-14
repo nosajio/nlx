@@ -1,10 +1,54 @@
-import nlx from '..';
+import { beforeAll, describe, expect, test } from 'vitest';
+import NLx from '../src/index';
 
-describe('client setup', () => {
+describe('new NLx()', () => {
   test('new client returns a nlx instance', () => {
-    const client = new nlx({
-      openaiApiKey: 'test',
+    const client = new NLx({
+      openaiConfig: { apiKey: 'test-key' },
     });
-    expect(client).toBeInstanceOf(nlx);
+    expect(client).toBeInstanceOf(NLx);
+  });
+
+  test('new client throws if no openaiConfig is provided', () => {
+    expect(() => {
+      // @ts-expect-error
+      new NLx({});
+    }).toThrow();
+  });
+
+  test('multiple clients can be created', () => {
+    const client1 = new NLx({
+      openaiConfig: { apiKey: 'test-key-1' },
+    });
+    const client2 = new NLx({
+      openaiConfig: { apiKey: 'test-key-2' },
+    });
+
+    expect(client1).toBeInstanceOf(NLx);
+    expect(client2).toBeInstanceOf(NLx);
+  });
+});
+
+describe('NLx.use()', () => {
+  let client: NLx;
+  beforeAll(() => {
+    if (!process.env.TEST_OPENAI_API_KEY) {
+      throw new Error('TEST_OPENAI_API_KEY not set');
+    }
+
+    client = new NLx({
+      openaiConfig: {
+        apiKey: process.env.TEST_OPENAI_API_KEY,
+      },
+    });
+  });
+
+  test('client context is empty by default', () => {
+    expect(client.getContext()).toEqual(new Map());
+  });
+
+  test('client context can be set with key, value', () => {
+    client.use('test', 'value');
+    expect(client.getContext()).toEqual(new Map([['test', 'value']]));
   });
 });
