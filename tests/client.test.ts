@@ -51,4 +51,11 @@ describe('NLx.use()', () => {
     client.use('test', 'value');
     expect(client.getContext()).toEqual(new Map([['test', 'value']]));
   });
+
+  test('client context will convert json to strings', () => {
+    client.use('test', { hello: 'world' });
+    expect(client.getContext()).toEqual(
+      new Map([['test', '{"hello":"world"}']]),
+    );
+  });
 });

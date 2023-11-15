@@ -25,3 +25,17 @@ export type NLxQueryResponse = {
   format: NLxQueryReturnType;
   confidence: number;
 };
+
+type NLxJsonArray = Array<NLxJsonValue>;
+
+export type NLxJsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | NLxJsonObject
+  | NLxJsonArray;
+
+export type NLxJsonObject = {
+  [key: string]: NLxJsonValue;
+};

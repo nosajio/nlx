@@ -1,13 +1,14 @@
 import OpenAI from 'openai';
+import { VALID_RETURN_TYPES } from '../constants';
 import { getSystemPrompt, getUserPrompt } from '../helpers/promptHelpers';
 import { assertNLxQueryResponse } from '../helpers/responseHelpers';
 import {
   NLxConfig,
   NLxContext,
+  NLxJsonValue,
   NLxQueryResponse,
   NLxQueryReturnType,
 } from '../types';
-import { VALID_RETURN_TYPES } from '../constants';
 
 export class NLxClient {
   private context: NLxContext = new Map();
@@ -17,7 +18,22 @@ export class NLxClient {
     this.client = new OpenAI(openaiConfig);
   }
 
-  private upsertContext(key: string, value: string) {
+  private upsertContext(key: string, value: NLxJsonValue) {
+    switch (typeof value) {
+      case 'number':
+        value = value.toString();
+        break;
+      case 'boolean':
+        value = value.toString();
+        break;
+      case 'string':
+        value = value;
+        break;
+      case 'object':
+        value = JSON.stringify(value);
+        break;
+    }
+
     this.context.set(key, value);
   }
 
@@ -65,7 +81,7 @@ export class NLxClient {
     }
   }
 
-  public use(key: string, value: string) {
+  public use(key: string, value: NLxJsonValue) {
     this.upsertContext(key, value);
   }
 
