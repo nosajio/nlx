@@ -9,7 +9,7 @@ beforeAll(() => {
   }
 
   client = new NLx({
-    openaiConfig: {
+    openAiConfig: {
       apiKey: process.env.TEST_OPENAI_API_KEY,
     },
   });

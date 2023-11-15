@@ -11,7 +11,7 @@ if (!openaiApiKey) {
  * Configure the client with an OpenAI API key
  */
 const client = new NLx({
-  openaiConfig: { apiKey: openaiApiKey },
+  openAiConfig: { apiKey: openaiApiKey },
 });
 
 /**

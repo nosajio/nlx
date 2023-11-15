@@ -4,12 +4,12 @@ import NLx from '../src/index';
 describe('new NLx()', () => {
   test('new client returns a nlx instance', () => {
     const client = new NLx({
-      openaiConfig: { apiKey: 'test-key' },
+      openAiConfig: { apiKey: 'test-key' },
     });
     expect(client).toBeInstanceOf(NLx);
   });
 
-  test('new client throws if no openaiConfig is provided', () => {
+  test('new client throws if no openAiConfig is provided', () => {
     expect(() => {
       // @ts-expect-error
       new NLx({});
@@ -18,10 +18,10 @@ describe('new NLx()', () => {
 
   test('multiple clients can be created', () => {
     const client1 = new NLx({
-      openaiConfig: { apiKey: 'test-key-1' },
+      openAiConfig: { apiKey: 'test-key-1' },
     });
     const client2 = new NLx({
-      openaiConfig: { apiKey: 'test-key-2' },
+      openAiConfig: { apiKey: 'test-key-2' },
     });
 
     expect(client1).toBeInstanceOf(NLx);
@@ -37,7 +37,7 @@ describe('NLx.use()', () => {
     }
 
     client = new NLx({
-      openaiConfig: {
+      openAiConfig: {
         apiKey: process.env.TEST_OPENAI_API_KEY,
       },
     });

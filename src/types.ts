@@ -2,7 +2,7 @@ import { ClientOptions as OpenAiClientOptions } from 'openai';
 
 // Root
 export type NLxConfig = {
-  openaiConfig: OpenAiClientOptions;
+  openAiConfig: OpenAiClientOptions;
 };
 
 // Context

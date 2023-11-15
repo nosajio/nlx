@@ -14,8 +14,8 @@ export class NLxClient {
   private context: NLxContext = new Map();
   private client: OpenAI;
 
-  constructor({ openaiConfig }: NLxConfig) {
-    this.client = new OpenAI(openaiConfig);
+  constructor({ openAiConfig }: NLxConfig) {
+    this.client = new OpenAI(openAiConfig);
   }
 
   private upsertContext(key: string, value: NLxJsonValue) {
