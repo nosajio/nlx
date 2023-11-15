@@ -149,6 +149,19 @@ await client.query('number')`return a prime number` // Ex: 3
 await client.query('boolean')`is the sky blue?` // Ex: true
 ```
 
+`query` always returns a response object consisting of `answer`, `format`, and `confidence`.
+
+```ts
+const result = await client.query('string')`the first three letters of the alphabet`;
+
+// result = 
+// {
+//   "answer": "abc",       <- The query answer
+//   "format": "string",    <- The requested answer format
+//   "confidence": 1,       <- The LLM's confidence level
+// }
+```
+
 Note that responses from `query` are not as predictable as other functions.
 
 ## Tips & tricks
