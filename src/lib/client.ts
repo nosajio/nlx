@@ -67,6 +67,7 @@ export class NLxClient {
     try {
       const response = await this.client.chat.completions.create({
         model: 'gpt-4-1106-preview',
+        response_format: { type: 'json_object' },
         messages,
       });
       const answer = response.choices[0].message.content ?? '{}';

@@ -106,13 +106,13 @@ Context strings can be added to the client instance from anywhere in the app. Co
 ```ts
 // Add different context types to a client
 import client from './client';
-import webpage from './page.html';
+import document from './page.md';
 import userInfo from './info.json';
 
-client.use('Meaning of life', 42); // Numbers
-client.use('Our webpage', webpage); // Strings
-client.use('User information', userInfo); // Raw json
-client.use('Is new user', true); // Booleans
+client.use('Meaning of life', 42);          // Numbers
+client.use('A document', document);         // Strings
+client.use('User information', userInfo);   // Raw json
+client.use('Is new user', true);            // Booleans
 ```
 
 ## 🌟 Query API
