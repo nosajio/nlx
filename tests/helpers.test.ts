@@ -45,4 +45,22 @@ describe('contextHelpers', () => {
       );
     });
   });
+
+  describe('getUserPrompt()', () => {
+    test('passes all properties to the query', () => {
+      const context: NLxContext = new Map();
+      context.set('abc', 'hello world');
+      context.set('the meaning of life', '42');
+      const queryContext = getQueryContext(context);
+      const userPrompt = getQueryJson(
+        queryContext,
+        "What's the meaning of everything?",
+        'boolean',
+        '42',
+      );
+      expect(userPrompt).toEqual(
+        '{"query":"What\'s the meaning of everything?","predicate":"42","answerFormat":"boolean","context":{"abc":"hello world","the meaning of life":"42"}}',
+      );
+    });
+  });
 });

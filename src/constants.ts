@@ -1,4 +1,10 @@
-export const CONTEXT_DIVIDER = '\n\n------\n\n';
+import { NLxQueryReturnType } from './types';
+
+export const VALID_RETURN_TYPES: NLxQueryReturnType[] = [
+  'boolean',
+  'number',
+  'string',
+];
 
 export const SYSTEM_PROMPT = `
 You are an AI assistant running inside of a codebase. You must assist the program in answering certain queries based on a context, a query, and a predicate.

@@ -1,7 +1,13 @@
 import OpenAI from 'openai';
 import { getSystemPrompt, getUserPrompt } from '../helpers/promptHelpers';
 import { assertNLxQueryResponse } from '../helpers/responseHelpers';
-import { NLxConfig, NLxContext, NLxQueryReturnType } from '../types';
+import {
+  NLxConfig,
+  NLxContext,
+  NLxQueryResponse,
+  NLxQueryReturnType,
+} from '../types';
+import { VALID_RETURN_TYPES } from '../constants';
 
 export class NLxClient {
   private context: NLxContext = new Map();
@@ -15,11 +21,15 @@ export class NLxClient {
     this.context.set(key, value);
   }
 
+  /**
+   * Builds & run a new query from parameters and return the result.
+   * Will return undefined if the query fails.
+   */
   private async newQuery(
     query: string,
     returnType: NLxQueryReturnType,
     predicate?: string,
-  ) {
+  ): Promise<NLxQueryResponse | undefined> {
     const systemPrompt = getSystemPrompt();
     const userPrompt = getUserPrompt(
       this.context,
@@ -60,6 +70,14 @@ export class NLxClient {
   }
 
   public query(returnType: NLxQueryReturnType = 'string') {
+    if (!VALID_RETURN_TYPES.includes(returnType)) {
+      throw new Error(
+        `Invalid return type: ${returnType}. Must be one of ${VALID_RETURN_TYPES.join(
+          ', ',
+        )}`,
+      );
+    }
+
     return async (s: TemplateStringsArray) => {
       const query = s.join(' ');
       return await this.newQuery(query, returnType);

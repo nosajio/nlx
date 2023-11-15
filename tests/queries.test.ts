@@ -63,4 +63,11 @@ describe('NLx.query()', () => {
     expect(typeof resultNumber?.answer).toBe('number');
     expect(typeof resultBoolean?.answer).toBe('boolean');
   });
+
+  test('query(type)`...` throws with an invalid type', () => {
+    expect(() => {
+      // @ts-expect-error
+      client.query('invalid')`the meaning of life`;
+    }).toThrow();
+  });
 });
