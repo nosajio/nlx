@@ -12,7 +12,7 @@
 
 [![NPM version](https://img.shields.io/npm/v/nlx.svg)](https://npmjs.org/package/nlx)
 
-NLx is a lightweight query library for GPT4. By using a query interface, NLx can classify for you, pattern match, and perform complex logic from a simple function call.
+NLx is a lightweight query library for querying GPT4. By using a query interface, NLx can classify for you, pattern match, and perform complex logic from a simple function call.
 
 ## 🪄 Demo
 
@@ -54,8 +54,8 @@ const addComment = async (comment: string) => {
 /**
  * Basic pattern matching
  */
-const includesHello = async () => {
-  return await client.does('hello world')`contain the word "hello"?`
+const includesGreeting = async () => {
+  return await client.does('Hello world')`include a greeting?`
 }
 ```
 
