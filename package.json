@@ -14,7 +14,8 @@
     "README.md"
   ],
   "exports": {
-    ".": "dist/index.js"
+    ".": "./dist/index.js",
+    "./types": "./dist/index.d.ts"
   },
   "scripts": {
     "build": "tsup",
