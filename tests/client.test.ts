@@ -58,4 +58,15 @@ describe('NLx.use()', () => {
       new Map([['test', '{"hello":"world"}']]),
     );
   });
+
+  test('client context will convert numbers and booleans to strings', () => {
+    client.use('test', 42.2);
+    client.use('test2', true);
+    expect(client.getContext()).toEqual(
+      new Map([
+        ['test', '42.2'],
+        ['test2', 'true'],
+      ]),
+    );
+  });
 });
