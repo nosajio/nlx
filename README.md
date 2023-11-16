@@ -7,12 +7,16 @@
     </picture>
   </a>
 </p>
+<h1 align="center">Natural Language in Code</h1>
+<p align="center">
+  <a href="https://npmjs.org/package/nlx">
+    <img src="https://img.shields.io/npm/v/nlx.svg" alt="NPM version" />
+  </a>
+</p>
 
-# Natural Language in Code
+NLx is a lightweight, strictly typed query library built on top of GPT-4. By using a query interface, the LLM can be leveraged like any other JS function.
 
-[![NPM version](https://img.shields.io/npm/v/nlx.svg)](https://npmjs.org/package/nlx)
-
-NLx is a lightweight query library for querying GPT4. By using a query interface, NLx can classify for you, pattern match, and perform complex logic from a simple function call.
+NLx can classify for you, pattern match, and perform complex logic with minimal configuration.
 
 ## 🪄 Demo
 
