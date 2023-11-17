@@ -9,9 +9,11 @@ import {
   NLxQueryResponse,
   NLxQueryReturnType,
 } from '../types';
+import NLxCache from './cache';
 
 export class NLxClient {
   private context: NLxContext = new Map();
+  private cache: NLxCache = new NLxCache();
   private client: OpenAI;
 
   constructor({ openAiConfig }: NLxConfig) {
@@ -46,6 +48,12 @@ export class NLxClient {
     returnType: NLxQueryReturnType,
     predicate?: string,
   ): Promise<NLxQueryResponse | undefined> {
+    // If the query is cached, return the cached response instead
+    const cachedResponse = this.cache.get(query, returnType);
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+
     const systemPrompt = getSystemPrompt();
     const userPrompt = getUserPrompt(
       this.context,
@@ -74,6 +82,9 @@ export class NLxClient {
       const answerObj = JSON.parse(answer);
       assertNLxQueryResponse(answerObj);
 
+      // Save the response to the cache
+      this.cache.save(query, returnType, answerObj);
+
       return answerObj;
     } catch (error) {
       console.log('user prompt', userPrompt);
@@ -84,6 +95,8 @@ export class NLxClient {
 
   public use(key: string, value: NLxJsonValue) {
     this.upsertContext(key, value);
+    // Invalidate the cache as a changed context may change the response
+    this.cache.clear();
   }
 
   public query(returnType: NLxQueryReturnType = 'string') {

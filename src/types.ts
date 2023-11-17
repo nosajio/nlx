@@ -39,3 +39,6 @@ export type NLxJsonValue =
 export type NLxJsonObject = {
   [key: string]: NLxJsonValue;
 };
+
+// Cache
+export type NLxCacheTable = Map<number, NLxQueryResponse>;

@@ -1,7 +1,8 @@
-import { describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { getQueryContext } from '../src/helpers/contextHelpers';
 import { getQueryJson } from '../src/helpers/promptHelpers';
-import { NLxContext } from '../src/types';
+import NLxCache from '../src/lib/cache';
+import { NLxContext, NLxQueryResponse } from '../src/types';
 
 describe('contextHelpers', () => {
   describe('getQueryContext()', () => {
@@ -61,6 +62,81 @@ describe('contextHelpers', () => {
       expect(userPrompt).toEqual(
         '{"query":"What\'s the meaning of everything?","predicate":"42","answerFormat":"boolean","context":{"abc":"hello world","the meaning of life":"42"}}',
       );
+    });
+  });
+});
+
+describe('cacheHelpers', () => {
+  describe('addToCache()', () => {
+    let cache: NLxCache;
+    beforeEach(() => {
+      cache = new NLxCache();
+    });
+
+    test('adds a new entry to the cache', () => {
+      const query = "What's the meaning of everything?";
+      const returnType = 'boolean';
+      const response: NLxQueryResponse = {
+        answer: true,
+        format: 'boolean',
+        confidence: 0.9,
+      };
+      const key = cache.save(query, returnType, response);
+      const cacheTable = cache.toJSON();
+      expect(cacheTable).toEqual({
+        [key]: response,
+      });
+    });
+
+    test('overwrites an existing entry in the cache', () => {
+      const query = "What's the meaning of everything?";
+      const returnType = 'boolean';
+      const response: NLxQueryResponse = {
+        answer: true,
+        format: 'boolean',
+        confidence: 0.9,
+      };
+      const key = cache.save(query, returnType, response);
+      const cacheTable = cache.toJSON();
+      expect(cacheTable).toEqual({
+        [key]: response,
+      });
+
+      const query2 = "What's the meaning of everything?";
+      const returnType2 = 'boolean';
+      const response2: NLxQueryResponse = {
+        answer: false,
+        format: 'boolean',
+        confidence: 0.9,
+      };
+      const key2 = cache.save(query2, returnType2, response2);
+      const cacheTable2 = cache.toJSON();
+      expect(cacheTable2).toEqual({
+        [key2]: response2,
+      });
+    });
+  });
+
+  describe('getFromCache()', () => {
+    let cache: NLxCache;
+    beforeEach(() => {
+      cache = new NLxCache();
+    });
+
+    test('returns undefined if the key is not in the cache', () => {
+      const result = cache.get("What's the meaning of everything?", 'boolean');
+      expect(result).toBeUndefined();
+    });
+
+    test('returns the value if the key is in the cache', () => {
+      const response = {
+        answer: true,
+        format: 'boolean',
+        confidence: 0.9,
+      } satisfies NLxQueryResponse;
+      cache.save("What's the meaning of everything?", 'boolean', response);
+      const result = cache.get("What's the meaning of everything?", 'boolean');
+      expect(result).toEqual(response);
     });
   });
 });

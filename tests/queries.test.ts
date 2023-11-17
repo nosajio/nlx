@@ -1,5 +1,7 @@
-import { beforeAll, describe, expect, test } from 'vitest';
+import { beforeAll, describe, expect, test, vi } from 'vitest';
 import NLx from '../src/index';
+import { http } from 'msw';
+import { setupServer } from 'msw/node';
 
 // configure the client
 let client: NLx;
@@ -38,6 +40,24 @@ describe('NLx.does()', () => {
     expect(result).toHaveProperty('format');
     expect(result).toHaveProperty('confidence');
   });
+
+  test('does()`...` returns a boolean answer', async () => {
+    const result = await client.does('abcde')`include any numbers?`;
+    expect(typeof result?.answer).toBe('boolean');
+  });
+
+  test('does()`...` caches results by query and returnType', async () => {
+    const handler = vi.fn();
+    const server = setupServer(
+      http.post('https://api.openai.com/v1/chat/completions', handler),
+    );
+    server.listen();
+
+    const result1 = await client.does('earth')`exist in the solar system?`;
+    const result2 = await client.does('earth')`exist in the solar system?`;
+    expect(result1).toEqual(result2);
+    expect(handler).toHaveBeenCalledTimes(1);
+  }, 10000);
 });
 
 describe('NLx.query()', () => {
@@ -53,7 +73,7 @@ describe('NLx.query()', () => {
     expect(result).toHaveProperty('confidence');
   });
 
-  test('query(type)`...` type arg changes the return type', async () => {
+  test('query()`...` type arg changes the return type', async () => {
     const resultString = await client.query(
       'string',
     )`the first three letters of the alphabet`;
@@ -64,10 +84,27 @@ describe('NLx.query()', () => {
     expect(typeof resultBoolean?.answer).toBe('boolean');
   });
 
-  test('query(type)`...` throws with an invalid type', () => {
+  test('query()`...` throws with an invalid type', () => {
     expect(() => {
       // @ts-expect-error
       client.query('invalid')`the meaning of life`;
     }).toThrow();
   });
+
+  test('query()`...` caches results by query and returnType', async () => {
+    const handler = vi.fn();
+    const server = setupServer(
+      http.post('https://api.openai.com/v1/chat/completions', handler),
+    );
+    server.listen();
+
+    const result1 = await client.query(
+      'string',
+    )`give me one word to describe ocean`;
+    const result2 = await client.query(
+      'string',
+    )`give me one word to describe ocean`;
+    expect(result1).toEqual(result2);
+    expect(handler).toHaveBeenCalledTimes(1);
+  }, 10000);
 });
