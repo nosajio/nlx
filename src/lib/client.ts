@@ -12,8 +12,9 @@ import {
 import NLxCache from './cache';
 
 export class NLxClient {
+  public cache: NLxCache = new NLxCache();
+
   private context: NLxContext = new Map();
-  private cache: NLxCache = new NLxCache();
   private client: OpenAI;
 
   constructor({ openAiConfig }: NLxConfig) {

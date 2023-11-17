@@ -1,5 +1,8 @@
-import { beforeAll, describe, expect, test } from 'vitest';
+import { http } from 'msw';
+import { setupServer } from 'msw/node';
+import { beforeAll, describe, expect, test, vi } from 'vitest';
 import NLx from '../src/index';
+import { NLxQueryResponse } from '../src/types';
 
 describe('new NLx()', () => {
   test('new client returns a nlx instance', () => {
@@ -69,4 +72,19 @@ describe('NLx.use()', () => {
       ]),
     );
   });
+
+  test('adding to cache invalidates and clears the cache', async () => {
+    const handler = vi.fn();
+    const server = setupServer(
+      http.post('https://api.openai.com/v1/chat/completions', handler),
+    );
+    server.listen();
+
+    const result1 = await client.query('boolean')`is the earth flat?`;
+    const cacheJson = client.cache.toJSON();
+    expect(Object.values(cacheJson)).toEqual([result1]);
+    expect(client.cache.size()).toBe(1);
+    client.use('cacheTest', 'value');
+    expect(client.cache.size()).toBe(0);
+  }, 10000);
 });
