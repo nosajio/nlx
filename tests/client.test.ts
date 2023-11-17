@@ -30,6 +30,14 @@ describe('new NLx()', () => {
     expect(client1).toBeInstanceOf(NLx);
     expect(client2).toBeInstanceOf(NLx);
   });
+
+  test('the cache is disabled when cache: false is passed via config', () => {
+    const cachelessClient = new NLx({
+      openAiConfig: { apiKey: 'test-key' },
+      cache: false,
+    });
+    expect(cachelessClient.cacheEnabled).toBe(false);
+  });
 });
 
 describe('NLx.use()', () => {

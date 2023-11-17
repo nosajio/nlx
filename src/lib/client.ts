@@ -12,13 +12,15 @@ import {
 import NLxCache from './cache';
 
 export class NLxClient {
+  public readonly cacheEnabled = true;
   public cache: NLxCache = new NLxCache();
 
   private context: NLxContext = new Map();
   private client: OpenAI;
 
-  constructor({ openAiConfig }: NLxConfig) {
+  constructor({ openAiConfig, cache }: NLxConfig) {
     this.client = new OpenAI(openAiConfig);
+    this.cacheEnabled = cache || true;
   }
 
   private upsertContext(key: string, value: NLxJsonValue) {
@@ -50,7 +52,9 @@ export class NLxClient {
     predicate?: string,
   ): Promise<NLxQueryResponse | undefined> {
     // If the query is cached, return the cached response instead
-    const cachedResponse = this.cache.get(query, returnType);
+    const cachedResponse = this.cacheEnabled
+      ? this.cache.get(query, returnType)
+      : undefined;
     if (cachedResponse) {
       return cachedResponse;
     }
@@ -84,7 +88,9 @@ export class NLxClient {
       assertNLxQueryResponse(answerObj);
 
       // Save the response to the cache
-      this.cache.save(query, returnType, answerObj);
+      if (this.cacheEnabled) {
+        this.cache.save(query, returnType, answerObj);
+      }
 
       return answerObj;
     } catch (error) {
@@ -96,8 +102,11 @@ export class NLxClient {
 
   public use(key: string, value: NLxJsonValue) {
     this.upsertContext(key, value);
+
     // Invalidate the cache as a changed context may change the response
-    this.cache.clear();
+    if (this.cacheEnabled) {
+      this.cache.clear();
+    }
   }
 
   public query(returnType: NLxQueryReturnType = 'string') {

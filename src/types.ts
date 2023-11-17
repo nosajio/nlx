@@ -2,6 +2,7 @@ import { ClientOptions as OpenAiClientOptions } from 'openai';
 
 // Root
 export type NLxConfig = {
+  cache?: boolean;
   openAiConfig: OpenAiClientOptions;
 };
 

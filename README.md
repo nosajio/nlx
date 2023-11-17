@@ -119,6 +119,32 @@ client.use('User information', userInfo);   // Raw json
 client.use('Is new user', true);            // Booleans
 ```
 
+### Cache
+Results from OpenAI are cached based on the current context state, the query, and return type. If all three conditions are equal when a query is run, then the cached response will be returned instead.
+
+The cache can be disabled entirely by passing `cache: false` to the config object:
+
+```ts
+// client.ts
+
+const client = new NLx = ({
+  cache: false,               // Disable cache for this client
+  openAiConfig: {
+    apiKey: 'your api key'
+  }
+});
+```
+
+#### Clear the cache manually
+If you need to clear the cache, it can be done by calling the builtin clear method: 
+
+```ts
+import client from './client';
+
+// Clear the cache to ensure all future queries are re-run
+client.cache.clear();
+```
+
 ## 🌟 Query API
 NLx currently supports two query types and *more coming soon!*
 
